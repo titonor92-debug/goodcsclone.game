@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBERSTRIKE - 3D FPS Shooter</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Анимированный фон -->
+    <div class="bg-animation">
+        <div class="grid-lines"></div>
+        <div class="particles"></div>
+    </div>
+
+    <!-- Главное меню -->
+    <div id="menu" class="menu">
+        <div class="glitch-container">
+            <h1 class="game-title glitch" data-text="CYBERSTRIKE">CYBERSTRIKE</h1>
+            <div class="subtitle">TACTICAL FPS WARFARE</div>
+        </div>
+        
+        <div class="menu-content">
+            <button id="startButton" class="menu-button primary-button">
+                <span class="button-text">START MISSION</span>
+                <span class="button-glow"></span>
+            </button>
+            
+            <div class="controls-grid">
+                <div class="control-item">
+                    <span class="control-key">WASD</span>
+                    <span class="control-action">ДВИЖЕНИЕ</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">SPACE</span>
+                    <span class="control-action">ПРЫЖОК</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">LMB</span>
+                    <span class="control-action">СТРЕЛЬБА</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">R</span>
+                    <span class="control-action">ПЕРЕЗАРЯДКА</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">1-3</span>
+                    <span class="control-action">ОРУЖИЕ</span>
+                </div>
+                <div class="control-item">
+                    <span class="control-key">ESC</span>
+                    <span class="control-action">МЕНЮ</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Игровой контейнер -->
+    <div id="gameContainer"></div>
+
+    <!-- HUD -->
+    <div id="hud" class="hud hidden">
+        <!-- Сканлайны для эффекта -->
+        <div class="scanlines"></div>
+        
+        <!-- Прицел -->
+        <div class="crosshair">
+            <div class="crosshair-center">
+                <div class="crosshair-dot"></div>
+                <div class="crosshair-ring"></div>
+            </div>
+            <div class="crosshair-line crosshair-top"></div>
+            <div class="crosshair-line crosshair-bottom"></div>
+            <div class="crosshair-line crosshair-left"></div>
+            <div class="crosshair-line crosshair-right"></div>
+        </div>
+
+        <!-- Верхняя панель -->
+        <div class="hud-top">
+            <div class="mission-timer">
+                <span class="timer-label">MISSION TIME</span>
+                <span class="timer-value" id="missionTimer">00:00</span>
+            </div>
+        </div>
+
+        <!-- Информация о здоровье и патронах -->
+        <div class="hud-bottom">
+            <div class="hud-health">
+                <div class="health-container">
+                    <div class="health-icon">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="health-info">
+                        <div class="health-label">HEALTH</div>
+                        <div class="health-value" id="healthValue">100</div>
+                    </div>
+                </div>
+                <div class="health-bar">
+                    <div class="health-bar-bg"></div>
+                    <div class="health-bar-fill" id="healthBar"></div>
+                    <div class="health-bar-glow"></div>
+                </div>
+            </div>
+
+            <div class="hud-ammo">
+                <div class="ammo-display">
+                    <div class="ammo-current" id="ammoValue">30</div>
+                    <div class="ammo-separator"></div>
+                    <div class="ammo-reserve" id="reserveValue">90</div>
+                </div>
+                <div class="ammo-label">AMMUNITION</div>
+                <div class="ammo-bars">
+                    <div class="ammo-bar"></div>
+                    <div class="ammo-bar"></div>
+                    <div class="ammo-bar"></div>
+                </div>
+            </div>
+
+            <div class="hud-weapon">
+                <div class="weapon-display">
+                    <div class="weapon-name" id="weaponName">AK-47</div>
+                    <div class="weapon-status">READY</div>
+                </div>
+                <div class="weapon-slots">
+                    <div class="weapon-slot active" data-slot="1">1</div>
+                    <div class="weapon-slot" data-slot="2">2</div>
+                    <div class="weapon-slot" data-slot="3">3</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Индикатор попадания -->
+        <div id="hitMarker" class="hit-marker hidden">
+            <div class="hit-marker-line hit-line-1"></div>
+            <div class="hit-marker-line hit-line-2"></div>
+            <div class="hit-marker-line hit-line-3"></div>
+            <div class="hit-marker-line hit-line-4"></div>
+        </div>
+
+        <!-- Сообщение о перезарядке -->
+        <div id="reloadMessage" class="reload-message hidden">
+            <div class="reload-spinner"></div>
+            <span>RELOADING</span>
+        </div>
+
+        <!-- Килл фид -->
+        <div class="kill-feed" id="killFeed"></div>
+    </div>
+
+    <!-- Контейнер для спрайта оружия -->
+    <div id="weaponSprite" class="weapon-sprite">
+        <div class="weapon-glow"></div>
+    </div>
+
+    <!-- Экран паузы -->
+    <div id="pauseMenu" class="pause-menu hidden">
+        <div class="pause-overlay"></div>
+        <div class="pause-content">
+            <h2 class="pause-title glitch" data-text="PAUSED">PAUSED</h2>
+            <button id="resumeButton" class="menu-button">
+                <span class="button-text">RESUME</span>
+                <span class="button-glow"></span>
+            </button>
+            <button id="exitButton" class="menu-button secondary-button">
+                <span class="button-text">EXIT</span>
+                <span class="button-glow"></span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Эффект вспышки при уроне -->
+    <div id="damageFlash" class="damage-flash"></div>
+    
+    <!-- Виньетка -->
+    <div class="vignette"></div>
+
+    <!-- Подключение библиотек -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Подключение модулей игры -->
+    <script type="module" src="main.js"></script>
+
+    <!-- Заглушка для Яндекс SDK -->
+    <script>
+        // Заглушка для YaGames SDK
+        window.YaGames = {
+            init: () => Promise.resolve({
+                adv: {
+                    showFullscreenAdv: (callbacks) => {
+                        console.log('Показ рекламы (заглушка)');
+                        if (callbacks.onClose) callbacks.onClose();
+                    }
+                },
+                feedback: {
+                    canReview: () => Promise.resolve({ value: true }),
+                    requestReview: () => Promise.resolve({ feedbackSent: true })
+                }
+            })
+        };
+    </script>
+</body>
+</html>
